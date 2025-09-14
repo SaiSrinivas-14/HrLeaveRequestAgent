@@ -1,0 +1,178 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>HR Leave AI Chat</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            margin: 0;
+            padding: 15px;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chat-container {
+            width: 450px;
+            max-width: 100%;
+            height: 700px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background-color: #2563eb;
+            color: white;
+            padding: 15px;
+            font-size: 1.25rem;
+            text-align: center;
+            border-radius: 0 0 0 0; /* header stays below logo */
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f9fafb;
+        }
+
+        .message {
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 75%;
+            margin-bottom: 12px;
+            word-wrap: break-word;
+            font-size: 1rem;
+        }
+
+            .message.user {
+                background-color: #3b82f6;
+                color: white;
+                align-self: flex-end;
+                width: fit-content;
+                max-width: 75%;
+                min-width: 0;
+            }
+
+            .message.ai {
+                background-color: #e5e7eb;
+                color: #111827;
+                align-self: flex-start;
+            }
+
+        .chat-input {
+            padding: 15px;
+            border-top: 1px solid #ccc;
+            display: flex;
+            gap: 10px;
+        }
+
+            .chat-input input {
+                flex-grow: 1;
+                padding: 10px;
+                font-size: 1rem;
+                border: 1px solid #999;
+                border-radius: 20px;
+                outline: none;
+            }
+
+                .chat-input input::placeholder {
+                            color: #6b7280;   
+                            font-style: normal;
+                            font-weight: 500; 
+                            font-size: 0.95rem;
+                            letter-spacing: 0.5px; 
+                    }
+
+
+                .chat-input input:focus {
+                    border-color: #3b82f6;
+                    box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+                }
+
+            .chat-input button {
+                background-color: #3b82f6;
+                color: white;
+                border: none;
+                padding: 0 20px;
+                font-size: 1rem;
+                border-radius: 20px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+                .chat-input button:hover {
+                    background-color: #1e40af;
+                }
+
+        /* ✅ New logo styling */
+        .logo-img {
+            width: 100%;
+            height: 120px; /* adjust as needed */
+            object-fit: contain; /* keeps aspect ratio */
+            border-radius: 8px 8px 0 0;
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container" role="main" aria-label="HR Leave AI Chat">
+        <!-- Company Logo -->
+        <div>
+            <img src="/images/seguro_logo.png" alt="SeguroSoft Logo" class="logo-img" />
+        </div>
+
+        <div class="chat-header">
+            AI-Powered Leave Request HR Agent
+        </div>
+        <div id="chatMessages" class="chat-messages" tabindex="0" aria-live="polite" aria-relevant="additions"></div>
+        <form id="chatForm" class="chat-input" aria-label="Send message form">
+            <input type="text" id="userMessage" placeholder="Type your message here..." aria-label="Message input"
+                   autocomplete="off" required />
+            <button type="submit" aria-label="Send message">Send</button>
+        </form>
+    </div>
+    <script>
+        function addMessage(text, sender) {
+            const container = $('#chatMessages');
+            const messageDiv = $('<div>').addClass('message').addClass(sender).text(text);
+            container.append(messageDiv);
+            container.scrollTop(container[0].scrollHeight);
+        }
+        $(function () {
+            const form = $('#chatForm');
+            const input = $('#userMessage');
+            form.on('submit', function (e) {
+                e.preventDefault();
+                const msg = input.val().trim();
+                if (!msg) return;
+                addMessage(msg, 'user');
+                input.val('');
+                input.focus();
+                $.ajax({
+                    url: '/api/gpt/chat',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ message: msg }),
+                    success: function (response) {
+                        addMessage(response, 'ai');
+                    },
+                    error: function () {
+                        addMessage('Sorry, something went wrong. Please try again.', 'ai');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
