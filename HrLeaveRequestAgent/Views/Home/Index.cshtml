@@ -12,7 +12,7 @@
             font-family: Arial, sans-serif;
             height: 100vh;
             margin: 0;
-            padding: 15px;
+            padding: 20px;
             background-color: #f0f2f5;
             display: flex;
             justify-content: center;
@@ -20,22 +20,24 @@
         }
 
         .chat-container {
-            width: 450px;
+            width: 520px;
             max-width: 100%;
-            height: 700px;
+            height: 780px;
             background-color: white;
             border: 1px solid #ccc;
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .chat-header {
             background-color: #2563eb;
             color: white;
-            padding: 15px;
-            font-size: 1.25rem;
+            padding: 18px;
+            font-size: 1.4rem;
             text-align: center;
+            font-weight: bold;
         }
 
         .chat-messages {
@@ -45,19 +47,19 @@
             background: #f9fafb;
             display: flex;
             flex-direction: column;
+            font-size: 1.05rem;
         }
 
         .message {
-            padding: 10px 15px;
-            border-radius: 15px;
+            padding: 12px 18px;
+            border-radius: 16px;
             max-width: 75%;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             word-wrap: break-word;
             font-size: 1rem;
-            white-space: pre-wrap; /* preserves line breaks */
+            white-space: pre-wrap;
         }
 
-            /* User message - right side (blue background) */
             .message.user {
                 background-color: #3b82f6;
                 color: white;
@@ -65,7 +67,6 @@
                 text-align: right;
             }
 
-            /* AI message - left side (gray background) */
             .message.ai {
                 background-color: #e5e7eb;
                 color: #111827;
@@ -74,7 +75,7 @@
             }
 
         .chat-input {
-            padding: 15px;
+            padding: 18px;
             border-top: 1px solid #ccc;
             display: flex;
             gap: 10px;
@@ -82,18 +83,16 @@
 
             .chat-input input {
                 flex-grow: 1;
-                padding: 10px;
+                padding: 12px 16px;
                 font-size: 1rem;
                 border: 1px solid #999;
-                border-radius: 20px;
+                border-radius: 22px;
                 outline: none;
             }
 
                 .chat-input input::placeholder {
                     color: #6b7280;
-                    font-weight: 500;
                     font-size: 0.95rem;
-                    letter-spacing: 0.5px;
                 }
 
                 .chat-input input:focus {
@@ -105,9 +104,9 @@
                 background-color: #3b82f6;
                 color: white;
                 border: none;
-                padding: 0 20px;
+                padding: 10px 22px;
                 font-size: 1rem;
-                border-radius: 20px;
+                border-radius: 22px;
                 cursor: pointer;
                 transition: background-color 0.3s ease;
             }
@@ -116,12 +115,11 @@
                     background-color: #1e40af;
                 }
 
-        /* Logo styling */
         .logo-img {
             width: 100%;
             height: 120px;
             object-fit: contain;
-            border-radius: 8px 8px 0 0;
+            border-radius: 10px 10px 0 0;
             background: white;
         }
     </style>
@@ -142,6 +140,7 @@
             <button type="submit" aria-label="Send message">Send</button>
         </form>
     </div>
+
     <script>
         function addMessage(text, sender) {
             const container = $('#chatMessages');
@@ -169,7 +168,6 @@
                     contentType: 'application/json',
                     data: JSON.stringify({ message: msg }),
                     success: function (response) {
-                        // preserve line breaks in AI response
                         const formattedResponse = response.replace(/\n/g, '\n');
                         addMessage(formattedResponse, 'ai');
                     },
